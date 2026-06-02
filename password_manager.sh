@@ -62,6 +62,7 @@ while true; do
         *)
             echo "入力が間違えています。Add Password または Exit から入力してください。"
             echo ""
+            
             ;;
     esac
 
