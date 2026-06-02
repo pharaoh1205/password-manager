@@ -1,19 +1,55 @@
 # このファイルをBashというシェルで実行して
 #!/bin/bash
-
-
-# 保存先ファイルの名前を定義
 DATA_FILE="passwords.txt"
-
 echo "パスワードマネージャーへようこそ！"
 
-# ユーザーからの入力を受け取る
-read -p "サービス名を入力してください：" service_name
-read -p "ユーザー名を入力してください：" user_name
-read -p "パスワードを入力してください：" password
+# ★ここから while ループを開始（条件を true にして無限に繰り返す）
+while true; do
 
-# 「サービス名:ユーザー名:パスワード」の形式でファイルに追記保存
-echo "${service_name}:${user_name}:${password}" >> "$DATA_FILE"
+    echo "次の選択肢から入力してください(Add Password/Get Password/Exit)："
+    read -p "選択：" choice
 
-echo "Thank you!"
+    case "$choice" in
+        "Add Password")
+            # （ここはさっき作った中身がそのまま入ります）
+            read -p "サービス名を入力してください：" service_name
+            read -p "ユーザー名を入力してください：" user_name
+            read -p "パスワードを入力してください：" password
+            echo "${service_name}:${user_name}:${password}" >> "$DATA_FILE"
+            echo "パスワードの追加が完了しました。"
+            echo ""
+            ;;
 
+        "Get Password")
+            read -p "サービス名を入力してください：" search_name
+            
+            if grep -q "^${search_name}:" "$DATA_FILE" 2>/dev/null; then
+                # 【見つかった場合】
+                # 見つかった行をパイプ(|)で次の命令に渡してバラす
+                grep "^${search_name}:" "$DATA_FILE" | while IFS=: read -r svc user pwd; do
+                    echo "サービス名：$svc"
+                    echo "ユーザー名：$user"
+                    echo "パスワード：$pwd"
+                done
+                
+            else
+                # 【見つからなかった場合】
+                echo "そのサービスは登録されていません。"
+            fi
+            
+            echo ""
+            ;;
+
+        "Exit")
+            echo "Thank you!"
+            break
+            ;;
+
+        *)
+            echo "入力が間違えています。Add Password または Exit から入力してください。"
+            echo ""
+            ;;
+    esac
+
+# ★ここで while ループの終わりを指定
+done
