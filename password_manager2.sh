@@ -22,9 +22,20 @@ while true; do
         "Get Password")
             read -p "サービス名を入力してください：" search_name
             
-            echo "--- 検索結果 ---"
-            grep "^${search_name}:" "$DATA_FILE"
-            echo "----------------"
+            if grep -q "^${search_name}:" "$DATA_FILE" 2>/dev/null; then
+                # 【見つかった場合】
+                # 見つかった行をパイプ(|)で次の命令に渡してバラす
+                grep "^${search_name}:" "$DATA_FILE" | while IFS=: read -r svc user pwd; do
+                    echo "サービス名：$svc"
+                    echo "ユーザー名：$user"
+                    echo "パスワード：$pwd"
+                done
+                
+            else
+                # 【見つからなかった場合】
+                echo "そのサービスは登録されていません。"
+            fi
+            
             echo ""
             ;;
 
