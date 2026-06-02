@@ -11,10 +11,24 @@ while true; do
 
     case "$choice" in
         "Add Password")
-            # （ここはさっき作った中身がそのまま入ります）
-            read -p "サービス名を入力してください：" service_name
-            read -p "ユーザー名を入力してください：" user_name
-            read -p "パスワードを入力してください：" password
+            while true; do
+                read -p "サービス名を入力してください：" service_name
+                read -p "ユーザー名を入力してください：" user_name
+                read -p "パスワードを入力してください：" password
+
+                # 入力値が空かどうかをチェック (-z は「空なら成功」という意味)
+                if [ -z "$service_name" ] || [ -z "$user_name" ] || [ -z "$password" ]; then
+                    echo "エラー：すべての項目を入力してください。"
+                    echo ""
+                    # whileの最初に戻って、入力をやり直させる
+                    continue
+                else
+                    # すべて正しく入力されていたら、チェックのループを抜ける
+                    break
+                fi
+            done
+
+            # ここは今まで通り、ファイルへの保存処理
             echo "${service_name}:${user_name}:${password}" >> "$DATA_FILE"
             echo "パスワードの追加が完了しました。"
             echo ""
