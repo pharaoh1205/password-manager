@@ -2,28 +2,34 @@
 DATA_FILE="passwords.txt"
 echo "パスワードマネージャーへようこそ！"
 
-# ★ここから新しく追加
-echo "次の選択肢から入力してください(Add Password/Exit)："
-read -p "選択：" choice
+# ★ここから while ループを開始（条件を true にして無限に繰り返す）
+while true; do
 
-case "$choice" in
-    "Add Password")
-        # ★ここに、さっきまで使っていたステップ1の処理を入れます
-        read -p "サービス名を入力してください：" service_name
-        read -p "ユーザー名を入力してください：" user_name
-        read -p "パスワードを入力してください：" password
+    echo "次の選択肢から入力してください(Add Password/Exit)："
+    read -p "選択：" choice
 
-        echo "${service_name}:${user_name}:${password}" >> "$DATA_FILE"
-        echo "パスワードの追加が完了しました。"
-        ;;
+    case "$choice" in
+        "Add Password")
+            read -p "サービス名を入力してください：" service_name
+            read -p "ユーザー名を入力してください：" user_name
+            read -p "パスワードを入力してください：" password
 
-    "Exit")
-        # ★Exit と打たれたら、Thank you! と言って終わる
-        echo "Thank you!"
-        ;;
+            echo "${service_name}:${user_name}:${password}" >> "$DATA_FILE"
+            echo "パスワードの追加が完了しました。"
+            echo "" # 画面を見やすくするために空行を入れる
+            ;;
 
-    *)
-        # ★予定外の文字（あ、とか 123 とか）が打たれた場合
-        echo "入力が間違えています。Add Password または Exit から入力してください。"
-        ;;
-esac
+        "Exit")
+            echo "Thank you!"
+            # ★ここ重要！ Exit が選ばれたら break で while ループを脱出する
+            break
+            ;;
+
+        *)
+            echo "入力が間違えています。Add Password または Exit から入力してください。"
+            echo ""
+            ;;
+    esac
+
+# ★ここで while ループの終わりを指定
+done
